@@ -62,3 +62,8 @@
 Simply download the project folder and open `index.php` in your browser.
 
 Alternatively, run it through a local server such as **XAMPP** by placing the project inside the `htdocs` folder, then visit:
+
+http://localhost
+
+> ✅ No setup or build process required — everything runs natively.
+
