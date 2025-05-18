@@ -59,27 +59,6 @@
 
 ## 🚀 Installation
 
-```bash
-# Clone the repository
-git clone https://github.com/your-org/mindmap.git
+Simply download the project folder and open `index.php` in your browser.
 
-# Navigate to the backend
-cd mindmap/backend
-
-# Install PHP dependencies
-composer install
-
-# Configure environment
-cp .env.example .env
-php artisan key:generate
-
-# Migrate DB and seed
-php artisan migrate --seed
-
-# Start backend server
-php artisan serve
-
-# Navigate to frontend
-cd ../frontend
-
-# Serve frontend (via any static server or Apache/Nginx)
+Alternatively, run it through a local server such as **XAMPP** by placing the project inside the `htdocs` folder, then visit:
