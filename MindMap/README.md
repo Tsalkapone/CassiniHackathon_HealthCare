@@ -8,17 +8,16 @@
 ## 🌄 Preview Screenshots
 
 ### 🖥️ Dashboard View  
-![Dashboard](https://www.dropbox.com/scl/fi/2ijyye1szion89n1bl7c0/user_dashboard_desktop.png?raw=1)
+![Dashboard](https://www.dropbox.com/scl/fi/2ijyye1szion89n1bl7c0/user_dashboard_desktop.png?rlkey=f4of7y7u0ykxihdi2nmby52c5&st=ruucmyd0&dl=0)
 
 ### 📱 Mobile View  
-![Mobile View](https://www.dropbox.com/scl/fi/xtld8oba3ulqj9r748hni/mindmap_pitch_app.png?raw=1)
+![Mobile View](https://www.dropbox.com/scl/fi/xtld8oba3ulqj9r748hni/mindmap_pitch_app.png?rlkey=qf73mamlltcckd4kpstgwr2up&st=cdyve4fg&dl=0)
 
 ### 🗺️ Map View  
-![Map View](https://www.dropbox.com/scl/fi/263caja199clcp7e2lhnr/map_desktop.png?raw=1)
-
-
+![Map View](https://www.dropbox.com/scl/fi/263caja199clcp7e2lhnr/map_desktop.png?rlkey=p0ieyhercsnx9lqlnyzq69av2&st=0prhyxm1&dl=0)
 
 ---
+
 
 ## ✨ Features
 
