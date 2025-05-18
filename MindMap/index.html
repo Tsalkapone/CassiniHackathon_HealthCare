@@ -1,1 +1,1665 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindMap | Wellness Dashboard</title>
+    <meta name="description" content="Personalized meditation and wellness app">
+    <meta name="theme-color" content="#75dab5">
+    <link rel="stylesheet" href="chat/style.css">
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="images/favicon-32x32.png">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="menu-logo">
+                <div class="logo-container">
+                    <img id="logo" src="images/mindmap.png">
+                </div>
+            </div>
+            <div class="user-avatar">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="User">
+            </div>
+            <div class="menu-container">
+                <div class="search-container">
+                    <div class="search-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <input type="text" class="search-input" placeholder="Search meditations, wellness tips, etc...">
+                </div>
+            </div>
+            <div class="view-toggle">
+                <div class="map-icon active">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <div class="dashboard-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="active view-btn" data-id="dashboard" data-tooltip="Home">
+                    <div class="icon-circle" style="background-color: var(--primary);">
+                        <i class="fas fa-home"></i>
+                    </div>
+                </li>
+                <li data-tooltip="Meditate">
+                    <div id="meditation-btn" data-id="meditation" class="icon-circle view-btn" style="background-color: var(--info);">
+                        <i class="fas fa-head-side-virus"></i>
+                    </div>
+                </li>
+                <li data-tooltip="Zen Buddy">
+                    <div id="ai-coach" data-id="ai" class="icon-circle view-btn" style="background-color: var(--secondary);">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                </li>
+                <li data-tooltip="Live Coaching">
+                    <div id="camera-btn" data-id="camera" class="icon-circle view-btn" style="background-color: var(--accent);">
+                        <i class="fas fa-video"></i>
+                    </div>
+                </li>
+                <li data-tooltip="Sleep">
+                    <div id="sleep-btn" data-id="sleep" class="icon-circle view-btn" style="background-color: var(--success);">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                </li>
+                <li data-tooltip="Seek for a Professional">
+                    <div id="psychologists-btn" data-id="psychologists" class="icon-circle view-btn" style="background-color: var(--warning);">
+                        <i class="fas fa-user-doctor"></i>
+                    </div>
+                </li>
+                <li data-tooltip="Mood Tracking">
+                    <div id="mood-btn" data-id="mood" class="icon-circle view-btn" style="background-color: var(--map-5);">
+                        <i class="fas fa-wave-square"></i>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Content -->
+            <div id="dashboard-view" class="dashboard-view views">
+                <header class="dashboard-header">
+                    <div class="greeting">
+                        <h1>Welcome Back, <span class="user-name">Alex</span></h1>
+                        <p class="daily-tip"><i class="fas fa-lightbulb"></i> Today's Tip: Practice gratitude with 3 deep breaths</p>
+                    </div>
+                    <div id="cards">
+                        <div id="soundscape-cards">
+                        <div class="soundscape-card">
+                          <div class="soundscape-image" style="background-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')">
+                            <div class="soundscape-overlay"></div>
+                            <div class="soundscape-content">
+                              <h3>Forest Whisper</h3>
+                              <p>Gentle breeze through ancient trees with birdsong and piano notes.</p>
+                              <div class="soundscape-controls">
+                                <button data-id="0" class="play-btn-soundscape">
+                                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M5 5V19L19 12L5 5Z" fill="currentColor"/>
+                                  </svg>
+                                </button>
+                                <button data-id="0" class="pause-btn-soundscape" style="display:none">
+                                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M6 19H10V5H6V19ZM14 5V19H18V5H14Z" fill="currentColor"/>
+                                  </svg>
+                                </button>
+                                <button data-id="0" class="stop-btn-soundscape" style="display:none">
+                                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M6 6H18V18H6V6Z" fill="currentColor"/>
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="soundscape-card">
+                          <div class="soundscape-image" style="background-image: url('https://images.pexels.com/photos/459451/pexels-photo-459451.jpeg')">
+                            <div class="soundscape-overlay"></div>
+                            <div class="soundscape-content">
+                              <h3>Rain drops</h3>
+                              <p>Rain taps softly, bringing calm, soothing mind and soul.</p>
+                              <div class="soundscape-controls">
+                                <button data-id="1" class="play-btn-soundscape">
+                                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M5 5V19L19 12L5 5Z" fill="currentColor"/>
+                                  </svg>
+                                </button>
+                                <button data-id="1" class="pause-btn-soundscape" style="display:none">
+                                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M6 19H10V5H6V19ZM14 5V19H18V5H14Z" fill="currentColor"/>
+                                  </svg>
+                                </button>
+                                <button data-id="1" class="stop-btn-soundscape" style="display:none">
+                                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M6 6H18V18H6V6Z" fill="currentColor"/>
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+                    <div id="recommendations-slider" class="recommendations-slider">
+                        <div class="slider-container">
+                            <div class="slider">
+                                <!-- Satellite-based recommendation 1 -->
+                                <div class="slide" style="background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb')">
+                                    <div class="slide-content">
+                                        <div class="data-badge">🌤️ LIVE DATA</div>
+                                        <h3>Perfect Outdoor Conditions</h3>
+                                        <p>Satellite data shows optimal air quality (AQI 32) and abundant sunshine in your area. This is an ideal time for a 20-minute walk to boost serotonin and vitamin D levels.</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- General recommendation 1 -->
+                                <div class="slide" style="background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), url('https://images.pexels.com/photos/31321859/pexels-photo-31321859/free-photo-of-cozy-cafe-table-with-cake-and-coffee-overhead-view.jpeg')">
+                                    <div class="slide-content">
+                                        <h3>5-4-3-2-1 Grounding Technique</h3>
+                                        <p>When stressed: Name 5 things you see, 4 things you feel, 3 things you hear, 2 things you smell, and 1 thing you taste. This brings you back to the present moment.</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Satellite-based recommendation 2 -->
+                                <div class="slide" style="background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e')">
+                                    <div class="slide-content">
+                                        <div class="data-badge">🛰️ LIVE DATA</div>
+                                        <h3>Nature Therapy Opportunity</h3>
+                                        <p>Vegetation indexes show parks near you are at peak greenery. Spending just 15 minutes in these green spaces can lower cortisol levels by up to 16%.</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- General recommendation 2 -->
+                                <div class="slide" style="background-image: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), url('https://images.unsplash.com/photo-1545205597-3d9d02c29597')">
+                                    <div class="slide-content">
+                                        <h3>Progressive Muscle Relaxation</h3>
+                                        <p>Starting from your toes, tense each muscle group for 5 seconds then release. Work upward through your body to relieve physical tension and mental stress.</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- General recommendation 3 -->
+                                <div class="slide" style="background-image: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), url('https://images.pexels.com/photos/261579/pexels-photo-261579.jpeg')">
+                                    <div class="slide-content">
+                                        <h3>Gratitude Journaling</h3>
+                                        <p>Write down 3 things you're grateful for today. This simple practice can increase long-term wellbeing by redirecting focus to positive aspects of life.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+<div class="weather-dashboard">
+  <!-- Main Weather Widget (Enhanced) -->
+  <div class="weather-widget">
+    <div class="weather-icon">
+      <i class="fas fa-cloud-sun"></i>
+    </div>
+    <div class="weather-info">
+      <span class="temp">22°C</span>
+      <span class="location"><i class="fas fa-map-marker-alt"></i> Thessaloniki, Greece</span>
+      <span class="aqi">
+        <i class="fas fa-wind"></i> AQI: 32 (Good)
+      </span>
+      <span class="humidity"><i class="fas fa-tint"></i> Humidity: 65%</span>
+    </div>
+    <div class="weather-right-panel">
+      <div class="air-quality-detail">
+        <div class="aqi-circle good">32</div>
+        <p>Ideal for outdoor activities</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Widgets Below -->
+  <div class="widget-row">
+    <!-- UV Index Widget -->
+    <div class="uv-widget widget">
+      <div class="widget-icon">
+        <i class="fas fa-sun"></i>
+      </div>
+      <div class="widget-content">
+        <h4>UV Index</h4>
+        <div class="uv-meter">
+          <div class="uv-level moderate" style="width: 60%"></div>
+        </div>
+        <p>5 (Moderate)</p>
+        <small>Wear sunscreen if outdoors</small>
+      </div>
+    </div>
+
+    <!-- Pollen Count Widget -->
+    <div class="pollen-widget widget">
+      <div class="widget-icon">
+        <i class="fas fa-leaf"></i>
+      </div>
+      <div class="widget-content">
+        <h4>Pollen Count</h4>
+        <div class="pollen-meter">
+          <div class="pollen-level low" style="width: 30%"></div>
+        </div>
+        <p>Low (2.4)</p>
+        <small>Good for allergy sufferers</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+                    </div>
+                </header>
+               
+
+                <!-- Quick Actions -->
+                <section class="quick-actions">
+                    <h2 class="section-title">Quick Start</h2>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="action-card" data-minutes="1">
+                                <div class="action-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <span>1 min</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="action-card" data-minutes="5">
+                                <div class="action-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <span>5 min</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="action-card" data-minutes="10">
+                                <div class="action-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <span>10 min</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Your Progress Section -->
+                <section class="progress-section">
+                    <h2 class="section-title">Your Progress</h2>
+                    <div class="progress-container">
+                        <div class="streak-widget">
+                            <div class="streak-count">
+                                <i class="fas fa-fire"></i>
+                                <span>7</span>
+                            </div>
+                            <p>Day Streak</p>
+                        </div>
+                        <div class="stats-widget">
+                            <div class="stat-item">
+                                <div class="stat-value">24</div>
+                                <div class="stat-label">Sessions</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">312</div>
+                                <div class="stat-label">Minutes</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modern-mood-tracker">
+                      <h3 class="mood-title">Weekly Mood Summary</h3>
+                      <div class="mood-faces">
+                        <div class="mood-day" data-mood="happy">
+                          <div class="mood-face">
+                            <div class="face-outline">
+                              <div class="eyes">
+                                <div class="eye"></div>
+                                <div class="eye"></div>
+                              </div>
+                              <div class="mouth happy"></div>
+                            </div>
+                          </div>
+                          <span class="day-label">Mon</span>
+                        </div>
+                        <div class="mood-day" data-mood="neutral">
+                          <div class="mood-face">
+                            <div class="face-outline">
+                              <div class="eyes">
+                                <div class="eye"></div>
+                                <div class="eye"></div>
+                              </div>
+                              <div class="mouth neutral"></div>
+                            </div>
+                          </div>
+                          <span class="day-label">Tue</span>
+                        </div>
+                        <div class="mood-day" data-mood="sad">
+                          <div class="mood-face">
+                            <div class="face-outline">
+                              <div class="eyes">
+                                <div class="eye"></div>
+                                <div class="eye"></div>
+                              </div>
+                              <div class="mouth sad"></div>
+                            </div>
+                          </div>
+                          <span class="day-label">Wed</span>
+                        </div>
+                        <div class="mood-day" data-mood="sad">
+                          <div class="mood-face">
+                            <div class="face-outline">
+                              <div class="eyes">
+                                <div class="eye"></div>
+                                <div class="eye"></div>
+                              </div>
+                              <div class="mouth sad"></div>
+                            </div>
+                          </div>
+                          <span class="day-label">Thu</span>
+                        </div>
+                        <div class="mood-day" data-mood="neutral">
+                          <div class="mood-face">
+                            <div class="face-outline">
+                              <div class="eyes">
+                                <div class="eye"></div>
+                                <div class="eye"></div>
+                              </div>
+                              <div class="mouth neutral"></div>
+                            </div>
+                          </div>
+                          <span class="day-label">Fri</span>
+                        </div>
+                    
+                        <div class="mood-day" data-mood="neutral">
+                          <div class="mood-face">
+                            <div class="face-outline">
+                              <div class="eyes">
+                                <div class="eye"></div>
+                                <div class="eye"></div>
+                              </div>
+                              <div class="mouth neutral"></div>
+                            </div>
+                          </div>
+                          <span class="day-label">Sat</span>
+                        </div>
+                        <div class="mood-day" data-mood="happy">
+                          <div class="mood-face">
+                            <div class="face-outline">
+                              <div class="eyes">
+                                <div class="eye"></div>
+                                <div class="eye"></div>
+                              </div>
+                              <div class="mouth happy"></div>
+                            </div>
+                          </div>
+                          <span class="day-label">Sun</span>
+                        </div>
+                      </div>
+                      <div style="display:none" class="mood-intensity">
+                        <div class="intensity-bar" style="--intensity: 80%"></div>
+                        <div class="intensity-labels">
+                          <span>Low</span>
+                          <span>High</span>
+                        </div>
+                      </div>
+                    </div>
+                </section>
+
+                <!-- Recommended Sessions -->
+                <section class="recommended-sessions">
+                    <h2 class="section-title">Recommended For You</h2>
+                    <div class="session-card">
+                        <div class="session-image" style="background-image: url('https://images.pexels.com/photos/6454089/pexels-photo-6454089.jpeg');">
+                            <div class="session-length">7 min</div>
+                        </div>
+                        <div class="session-info">
+                            <h3>Morning Energy Boost</h3>
+                            <p>Start your day with clarity and purpose</p>
+                            <div class="session-meta">
+                                <span><i class="fas fa-heart"></i> Stress Relief</span>
+                                <button class="btn btn-play"><i class="fas fa-play"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="session-card">
+                        <div class="session-image" style="background-image: url('https://images.pexels.com/photos/8261185/pexels-photo-8261185.jpeg');">
+                            <div class="session-length">12 min</div>
+                        </div>
+                        <div class="session-info">
+                            <h3>Deep Sleep Relaxation</h3>
+                            <p>Wind down for a restful night</p>
+                            <div class="session-meta">
+                                <span><i class="fas fa-moon"></i> Sleep</span>
+                                <button class="btn btn-play"><i class="fas fa-play"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- Meditation -->
+            <div id="meditation-view" style="display:none;" class="views">
+                <div class="meditation-container">
+                  <!-- Filter Button -->
+                  <div class="meditation-filter-header">
+                    <h2 class="meditation-title">Mindfulness Resources</h2>
+                    <button class="meditation-filter-btn">
+                      <svg class="meditation-filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>
+                      </svg>
+                      Filters
+                    </button>
+                  </div>
+                  
+                  <!-- Filter Panel -->
+                  <div class="meditation-filter-panel">
+                    <div class="meditation-filter-group">
+                      <h3 class="meditation-filter-title">Duration</h3>
+                      <div class="meditation-filter-options">
+                        <button class="meditation-filter-option" data-duration="short"><5 min</button>
+                        <button class="meditation-filter-option" data-duration="medium">5-15 min</button>
+                        <button class="meditation-filter-option" data-duration="long">>15 min</button>
+                      </div>
+                    </div>
+                    
+                    <div class="meditation-filter-group">
+                      <h3 class="meditation-filter-title">Purpose</h3>
+                      <div class="meditation-filter-options">
+                        <!-- Will be populated by JS -->
+                      </div>
+                    </div>
+                    
+                    <div class="meditation-filter-group">
+                      <h3 class="meditation-filter-title">Type</h3>
+                      <div class="meditation-filter-options">
+                        <!-- Will be populated by JS -->
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Content Grid -->
+                  <div class="meditation-grid">
+                    <!-- Row 1 -->
+                    <div class="meditation-grid-row">
+                      <!-- Item 1 -->
+                      <div class="meditation-item" data-duration="short" data-purpose="focus" data-type="breathing">
+                        <div class="meditation-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Breathing Exercise" class="meditation-image">
+                          <div class="meditation-img-overlay"></div>
+                          <div class="meditation-overlay">
+                            <div class="meditation-overlay-content">
+                              <h3>Box Breathing</h3>
+                              <p class="meditation-time"><i class="fas meditation-clock fa-clock"></i>4 minutes</p>
+                              <div class="meditation-tags">
+                                <span class="meditation-tag">focus</span>
+                                <span class="meditation-tag">stress relief</span>
+                                <span class="meditation-tag">breathing</span>
+                              </div>
+                              <p class="meditation-full-desc">A simple technique to calm your mind and improve concentration by following a 4-4-4-4 breathing pattern.</p>
+                            </div>
+                          </div>
+                          <svg class="meditation-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z" fill="#888"/>
+                          </svg>
+                        </div>
+                        <h3 class="meditation-item-title">Box Breathing</h3>
+                        <p class="meditation-item-desc">Calm your mind with this simple 4-step breathing technique.</p>
+                      </div>
+                      
+                      <!-- Item 2 -->
+                      <div class="meditation-item" data-duration="medium" data-purpose="relaxation" data-type="guided">
+                        <div class="meditation-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1545389336-cf090694435e?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Guided Meditation" class="meditation-image">
+                          <div class="meditation-img-overlay"></div>
+                          <div class="meditation-overlay">
+                            <div class="meditation-overlay-content">
+                              <h3>Body Scan</h3>
+                              <p class="meditation-time"><i class="fas meditation-clock fa-clock"></i>10 minutes</p>
+                              <div class="meditation-tags">
+                                <span class="meditation-tag">relaxation</span>
+                                <span class="meditation-tag">body awareness</span>
+                                <span class="meditation-tag">guided</span>
+                              </div>
+                              <p class="meditation-full-desc">A guided journey through your body to release tension and bring awareness to each part.</p>
+                            </div>
+                          </div>
+                          <svg class="meditation-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z" fill="#888"/>
+                          </svg>
+                        </div>
+                        <h3 class="meditation-item-title">Body Scan</h3>
+                        <p class="meditation-item-desc">Release tension with this full-body awareness practice.</p>
+                      </div>
+                      
+                      <!-- Item 3 -->
+                      <div class="meditation-item" data-duration="long" data-purpose="mindfulness" data-type="yoga">
+                        <div class="meditation-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Yoga" class="meditation-image">
+                          <div class="meditation-img-overlay"></div>
+                          <div class="meditation-overlay">
+                            <div class="meditation-overlay-content">
+                              <h3>Mindful Yoga</h3>
+                              <p class="meditation-time"><i class="fas meditation-clock fa-clock"></i>20 minutes</p>
+                              <div class="meditation-tags">
+                                <span class="meditation-tag">mindfulness</span>
+                                <span class="meditation-tag">movement</span>
+                                <span class="meditation-tag">yoga</span>
+                              </div>
+                              <p class="meditation-full-desc">Combine gentle yoga poses with mindful awareness for a moving meditation experience.</p>
+                            </div>
+                          </div>
+                          <svg class="meditation-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z" fill="#888"/>
+                          </svg>
+                        </div>
+                        <h3 class="meditation-item-title">Mindful Yoga</h3>
+                        <p class="meditation-item-desc">Combine movement with mindfulness in this gentle practice.</p>
+                      </div>
+                      
+                      <!-- Item 4 -->
+                      <div class="meditation-item" data-duration="short" data-purpose="stress-relief" data-type="sound">
+                        <div class="meditation-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Sound Bath" class="meditation-image">
+                          <div class="meditation-img-overlay"></div>
+                          <div class="meditation-overlay">
+                            <div class="meditation-overlay-content">
+                              <h3>Sound Bath</h3>
+                              <p class="meditation-time"><i class="fas meditation-clock fa-clock"></i>3 minutes</p>
+                              <div class="meditation-tags">
+                                <span class="meditation-tag">stress relief</span>
+                                <span class="meditation-tag">calming</span>
+                                <span class="meditation-tag">sound</span>
+                              </div>
+                              <p class="meditation-full-desc">Immerse yourself in healing vibrations with this short sound meditation.</p>
+                            </div>
+                          </div>
+                          <svg class="meditation-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z" fill="#888"/>
+                          </svg>
+                        </div>
+                        <h3 class="meditation-item-title">Sound Bath</h3>
+                        <p class="meditation-item-desc">Quick stress relief through healing sound vibrations.</p>
+                      </div>
+                    </div>
+                    
+                    <!-- Row 2 -->
+                    <div class="meditation-grid-row">
+                      <!-- Item 5 -->
+                      <div class="meditation-item" data-duration="medium" data-purpose="sleep" data-type="guided">
+                        <div class="meditation-image-wrapper">
+                          <img src="https://images.pexels.com/photos/4057839/pexels-photo-4057839.jpeg" alt="Sleep Meditation" class="meditation-image">
+                          <div class="meditation-img-overlay"></div>
+                          <div class="meditation-overlay">
+                            <div class="meditation-overlay-content">
+                              <h3>Relax Meditation</h3>
+                              <p class="meditation-time"><i class="fas meditation-clock fa-clock"></i>12 minutes</p>
+                              <div class="meditation-tags">
+                                <span class="meditation-tag">sleep</span>
+                                <span class="meditation-tag">relaxation</span>
+                                <span class="meditation-tag">guided</span>
+                              </div>
+                              <p class="meditation-full-desc">A guided meditation to help you relax your body and mind for better sleep.</p>
+                            </div>
+                          </div>
+                          <svg class="meditation-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z" fill="#888"/>
+                          </svg>
+                        </div>
+                        <h3 class="meditation-item-title">Relax Meditation</h3>
+                        <p class="meditation-item-desc">Drift off peacefully with this relax meditation.</p>
+                      </div>
+                      
+                      <!-- Item 6 -->
+                      <div class="meditation-item" data-duration="long" data-purpose="mindfulness" data-type="walking">
+                        <div class="meditation-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1470004914212-05527e49370b?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Walking Meditation" class="meditation-image">
+                          <div class="meditation-img-overlay"></div>
+                          <div class="meditation-overlay">
+                            <div class="meditation-overlay-content">
+                              <h3>Walking Meditation</h3>
+                              <p class="meditation-time"><i class="fas meditation-clock fa-clock"></i>25 minutes</p>
+                              <div class="meditation-tags">
+                                <span class="meditation-tag">mindfulness</span>
+                                <span class="meditation-tag">movement</span>
+                                <span class="meditation-tag">walking</span>
+                              </div>
+                              <p class="meditation-full-desc">Turn your daily walk into a meditative practice by bringing awareness to each step.</p>
+                            </div>
+                          </div>
+                          <svg class="meditation-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z" fill="#888"/>
+                          </svg>
+                        </div>
+                        <h3 class="meditation-item-title">Walking Meditation</h3>
+                        <p class="meditation-item-desc">Transform your walk into a mindful practice.</p>
+                      </div>
+                      
+                      <!-- Item 7 -->
+                      <div class="meditation-item" data-duration="short" data-purpose="focus" data-type="breathing">
+                        <div class="meditation-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1524863479829-916d8e77f114?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Alternate Nostril" class="meditation-image">
+                          <div class="meditation-img-overlay"></div>
+                          <div class="meditation-overlay">
+                            <div class="meditation-overlay-content">
+                              <h3>Alternate Nostril</h3>
+                              <p class="meditation-time"><i class="fas meditation-clock fa-clock"></i>5 minutes</p>
+                              <div class="meditation-tags">
+                                <span class="meditation-tag">focus</span>
+                                <span class="meditation-tag">balance</span>
+                                <span class="meditation-tag">breathing</span>
+                              </div>
+                              <p class="meditation-full-desc">This ancient breathing technique helps balance both hemispheres of the brain.</p>
+                            </div>
+                          </div>
+                          <svg class="meditation-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z" fill="#888"/>
+                          </svg>
+                        </div>
+                        <h3 class="meditation-item-title">Alternate Nostril</h3>
+                        <p class="meditation-item-desc">Balance your mind with this ancient breathing technique.</p>
+                      </div>
+                      
+                      <!-- Item 8 -->
+                      <div class="meditation-item" data-duration="medium" data-purpose="gratitude" data-type="journaling">
+                        <div class="meditation-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Gratitude Journaling" class="meditation-image">
+                          <div class="meditation-img-overlay"></div>
+                          <div class="meditation-overlay">
+                            <div class="meditation-overlay-content">
+                              <h3>Gratitude Practice</h3>
+                              <p class="meditation-time"><i class="fas meditation-clock fa-clock"></i>8 minutes</p>
+                              <div class="meditation-tags">
+                                <span class="meditation-tag">gratitude</span>
+                                <span class="meditation-tag">positivity</span>
+                                <span class="meditation-tag">journaling</span>
+                              </div>
+                              <p class="meditation-full-desc">Cultivate appreciation and shift your mindset with this guided gratitude exercise.</p>
+                            </div>
+                          </div>
+                          <svg class="meditation-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z" fill="#888"/>
+                          </svg>
+                        </div>
+                        <h3 class="meditation-item-title">Gratitude Practice</h3>
+                        <p class="meditation-item-desc">Shift your mindset through appreciation.</p>
+                      </div>
+                    </div>
+                    
+                    <!-- Row 3 -->
+                    <div class="meditation-grid-row">
+                      <!-- Item 9 -->
+                      <div class="meditation-item" data-duration="long" data-purpose="stress-relief" data-type="visualization">
+                        <div class="meditation-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Nature Visualization" class="meditation-image">
+                          <div class="meditation-img-overlay"></div>
+                          <div class="meditation-overlay">
+                            <div class="meditation-overlay-content">
+                              <h3>Nature Visualization</h3>
+                              <p class="meditation-time"><i class="fas meditation-clock fa-clock"></i>15 minutes</p>
+                              <div class="meditation-tags">
+                                <span class="meditation-tag">stress relief</span>
+                                <span class="meditation-tag">calming</span>
+                                <span class="meditation-tag">visualization</span>
+                              </div>
+                              <p class="meditation-full-desc">Transport yourself to a peaceful natural setting through guided imagery.</p>
+                            </div>
+                          </div>
+                          <svg class="meditation-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z" fill="#888"/>
+                          </svg>
+                        </div>
+                        <h3 class="meditation-item-title">Nature Visualization</h3>
+                        <p class="meditation-item-desc">Escape to a peaceful natural setting in your mind.</p>
+                      </div>
+                      
+                      <!-- Item 10 -->
+                      <div class="meditation-item" data-duration="short" data-purpose="energy" data-type="breathing">
+                        <div class="meditation-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1518604666860-9ed391f76460?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Energizing Breath" class="meditation-image">
+                          <div class="meditation-img-overlay"></div>
+                          <div class="meditation-overlay">
+                            <div class="meditation-overlay-content">
+                              <h3>Energizing Breath</h3>
+                              <p class="meditation-time"><i class="fas meditation-clock fa-clock"></i>3 minutes</p>
+                              <div class="meditation-tags">
+                                <span class="meditation-tag">energy</span>
+                                <span class="meditation-tag">focus</span>
+                                <span class="meditation-tag">breathing</span>
+                              </div>
+                              <p class="meditation-full-desc">Quick breathing exercise to invigorate your body and mind when you need a boost.</p>
+                            </div>
+                          </div>
+                          <svg class="meditation-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z" fill="#888"/>
+                          </svg>
+                        </div>
+                        <h3 class="meditation-item-title">Energizing Breath</h3>
+                        <p class="meditation-item-desc">Quick boost of energy through controlled breathing.</p>
+                      </div>
+                      
+                      <!-- Item 11 -->
+                      <div class="meditation-item" data-duration="medium" data-purpose="self-compassion" data-type="guided">
+                        <div class="meditation-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Self-Compassion" class="meditation-image">
+                          <div class="meditation-img-overlay"></div>
+                          <div class="meditation-overlay">
+                            <div class="meditation-overlay-content">
+                              <h3>Self-Compassion</h3>
+                              <p class="meditation-time"><i class="fas meditation-clock fa-clock"></i>10 minutes</p>
+                              <div class="meditation-tags">
+                                <span class="meditation-tag">self-compassion</span>
+                                <span class="meditation-tag">kindness</span>
+                                <span class="meditation-tag">guided</span>
+                              </div>
+                              <p class="meditation-full-desc">Practice treating yourself with the same kindness you'd show a good friend.</p>
+                            </div>
+                          </div>
+                          <svg class="meditation-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z" fill="#888"/>
+                          </svg>
+                        </div>
+                        <h3 class="meditation-item-title">Self-Compassion</h3>
+                        <p class="meditation-item-desc">Learn to treat yourself with kindness.</p>
+                      </div>
+                      
+                      <!-- Item 12 -->
+                      <div class="meditation-item" data-duration="long" data-purpose="mindfulness" data-type="body-scan">
+                        <div class="meditation-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Full Body Scan" class="meditation-image">
+                          <div class="meditation-img-overlay"></div>
+                          <div class="meditation-overlay">
+                            <div class="meditation-overlay-content">
+                              <h3>Full Body Scan</h3>
+                              <p class="meditation-time"><i class="fas meditation-clock fa-clock"></i>30 minutes</p>
+                              <div class="meditation-tags">
+                                <span class="meditation-tag">mindfulness</span>
+                                <span class="meditation-tag">relaxation</span>
+                                <span class="meditation-tag">body scan</span>
+                              </div>
+                              <p class="meditation-full-desc">A comprehensive journey through your body to release tension and cultivate awareness.</p>
+                            </div>
+                          </div>
+                          <svg class="meditation-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z" fill="#888"/>
+                          </svg>
+                        </div>
+                        <h3 class="meditation-item-title">Full Body Scan</h3>
+                        <p class="meditation-item-desc">Deep relaxation through complete body awareness.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>                
+            </div>
+            <!-- End of Meditation --> 
+            <!-- Professional view -->
+            <div id="psychologists-view" style="display:none;" class="views">
+                <div class="psychologists-container">
+                  <h2 class="psychologists-main-title">Meet Our Professionals</h2>
+                  
+                  <div class="psychologists-grid">
+                    <!-- Row 1 -->
+                    <!-- Psychologist 1 -->
+                    <div class="psychologists-item">
+                      <div class="psychologists-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Dr. Sarah Johnson" class="psychologists-image">
+                        <div class="psychologists-titles">
+                          <span>PhD Clinical Psychology</span>
+                          <span>MSc Cognitive Behavioral Therapy</span>
+                        </div>
+                        <div class="psychologists-name">Dr. Sarah Johnson</div>
+                        <div class="psychologists-message">
+                          My approach focuses on helping you develop practical strategies for daily challenges. 
+                          Together we'll work to understand thought patterns that may be holding you back.
+                          I specialize in anxiety disorders and relationship counseling.
+                        </div>
+                        <svg class="psychologists-premium-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                            <path fill="#FFD700" d="M576 136c0 22.09-17.91 40-40 40c-.248 0-.4551-.1266-.7031-.1305l-50.52 277.9C482 468.9 468.8 480 453.3 480H122.7c-15.46 0-28.72-11.06-31.48-26.27L40.71 175.9C40.46 175.9 40.25 176 40 176c-22.09 0-40-17.91-40-40S17.91 96 40 96s40 17.91 40 40c0 8.998-3.521 16.89-8.537 23.57l89.63 71.7c15.91 12.73 39.5 7.544 48.61-10.68l57.6-115.2C255.1 98.34 247.1 86.34 247.1 72C247.1 49.91 265.9 32 288 32s39.1 17.91 39.1 40c0 14.34-7.963 26.34-19.3 33.4l57.6 115.2c9.111 18.22 32.71 23.4 48.61 10.68l89.63-71.7C499.5 152.9 496 144.1 496 136C496 113.9 513.9 96 536 96S576 113.9 576 136z"></path>
+                        </svg>
+                      </div>
+                    </div>
+                    
+                    <!-- Psychologist 2 -->
+                    <div class="psychologists-item">
+                      <div class="psychologists-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Dr. Amina Bah" class="psychologists-image">
+                        <div class="psychologists-titles">
+                          <span>PsyD Clinical Psychology</span>
+                          <span>MA Marriage and Family Therapy</span>
+                        </div>
+                        <div class="psychologists-name">Dr. Amina Bah</div>
+                        <div class="psychologists-message">
+                          I believe in creating a safe space where couples and families can heal together.
+                          Let's work on building healthier communication patterns in your relationships.
+                        </div>
+                        <svg class="psychologists-premium-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                            <path fill="#FFD700" d="M576 136c0 22.09-17.91 40-40 40c-.248 0-.4551-.1266-.7031-.1305l-50.52 277.9C482 468.9 468.8 480 453.3 480H122.7c-15.46 0-28.72-11.06-31.48-26.27L40.71 175.9C40.46 175.9 40.25 176 40 176c-22.09 0-40-17.91-40-40S17.91 96 40 96s40 17.91 40 40c0 8.998-3.521 16.89-8.537 23.57l89.63 71.7c15.91 12.73 39.5 7.544 48.61-10.68l57.6-115.2C255.1 98.34 247.1 86.34 247.1 72C247.1 49.91 265.9 32 288 32s39.1 17.91 39.1 40c0 14.34-7.963 26.34-19.3 33.4l57.6 115.2c9.111 18.22 32.71 23.4 48.61 10.68l89.63-71.7C499.5 152.9 496 144.1 496 136C496 113.9 513.9 96 536 96S576 113.9 576 136z"></path>
+                        </svg>
+                      </div>
+                    </div>
+                    
+                    <!-- Psychologist 3 -->
+                    <div class="psychologists-item">
+                      <div class="psychologists-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Dr. Emily Rodriguez" class="psychologists-image">
+                        <div class="psychologists-titles">
+                          <span>PhD Neuropsychology</span>
+                          <span>BS Neuroscience</span>
+                        </div>
+                        <div class="psychologists-name">Dr. Emily Rodriguez</div>
+                        <div class="psychologists-message">
+                          Understanding the brain helps us understand behavior. 
+                          I combine neuroscience with practical therapy techniques.
+                          Specializing in trauma recovery and neurodevelopmental disorders.
+                        </div>
+                        <svg class="psychologists-premium-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                            <path fill="#FFD700" d="M576 136c0 22.09-17.91 40-40 40c-.248 0-.4551-.1266-.7031-.1305l-50.52 277.9C482 468.9 468.8 480 453.3 480H122.7c-15.46 0-28.72-11.06-31.48-26.27L40.71 175.9C40.46 175.9 40.25 176 40 176c-22.09 0-40-17.91-40-40S17.91 96 40 96s40 17.91 40 40c0 8.998-3.521 16.89-8.537 23.57l89.63 71.7c15.91 12.73 39.5 7.544 48.61-10.68l57.6-115.2C255.1 98.34 247.1 86.34 247.1 72C247.1 49.91 265.9 32 288 32s39.1 17.91 39.1 40c0 14.34-7.963 26.34-19.3 33.4l57.6 115.2c9.111 18.22 32.71 23.4 48.61 10.68l89.63-71.7C499.5 152.9 496 144.1 496 136C496 113.9 513.9 96 536 96S576 113.9 576 136z"></path>
+                        </svg>
+                      </div>
+                    </div>
+                    
+                    <!-- Psychologist 4 -->
+                    <div class="psychologists-item">
+                      <div class="psychologists-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Dr. David Wilson" class="psychologists-image">
+                        <div class="psychologists-titles">
+                          <span>EdD Counseling Psychology</span>
+                          <span>MS Educational Psychology</span>
+                        </div>
+                        <div class="psychologists-name">Dr. David Wilson</div>
+                        <div class="psychologists-message">
+                          With 15 years in school psychology, I understand learning challenges.
+                          My approach helps students and adults overcome academic stress.
+                          Let's build strategies that work with your unique learning style.
+                        </div>
+                        <svg class="psychologists-premium-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                            <path fill="#FFD700" d="M576 136c0 22.09-17.91 40-40 40c-.248 0-.4551-.1266-.7031-.1305l-50.52 277.9C482 468.9 468.8 480 453.3 480H122.7c-15.46 0-28.72-11.06-31.48-26.27L40.71 175.9C40.46 175.9 40.25 176 40 176c-22.09 0-40-17.91-40-40S17.91 96 40 96s40 17.91 40 40c0 8.998-3.521 16.89-8.537 23.57l89.63 71.7c15.91 12.73 39.5 7.544 48.61-10.68l57.6-115.2C255.1 98.34 247.1 86.34 247.1 72C247.1 49.91 265.9 32 288 32s39.1 17.91 39.1 40c0 14.34-7.963 26.34-19.3 33.4l57.6 115.2c9.111 18.22 32.71 23.4 48.61 10.68l89.63-71.7C499.5 152.9 496 144.1 496 136C496 113.9 513.9 96 536 96S576 113.9 576 136z"></path>
+                        </svg>
+                      </div>
+                    </div>
+                    
+                    <!-- Row 2 -->
+                    <!-- Psychologist 5 -->
+                    <div class="psychologists-item">
+                      <div class="psychologists-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1590086783191-a0694c7d1e6e?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Dr. Michael Chen" class="psychologists-image">
+                        <div class="psychologists-titles">
+                          <span>PhD Health Psychology</span>
+                          <span>MPH Public Health</span>
+                        </div>
+                        <div class="psychologists-name">Dr. Michael Chen</div>
+                        <div class="psychologists-message">
+                          Mental health and physical health are deeply connected.
+                          I help patients with chronic illnesses improve their quality of life.
+                          My approach combines mindfulness with evidence-based behavioral medicine.
+                        </div>
+                        <svg class="psychologists-premium-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                            <path fill="#FFD700" d="M576 136c0 22.09-17.91 40-40 40c-.248 0-.4551-.1266-.7031-.1305l-50.52 277.9C482 468.9 468.8 480 453.3 480H122.7c-15.46 0-28.72-11.06-31.48-26.27L40.71 175.9C40.46 175.9 40.25 176 40 176c-22.09 0-40-17.91-40-40S17.91 96 40 96s40 17.91 40 40c0 8.998-3.521 16.89-8.537 23.57l89.63 71.7c15.91 12.73 39.5 7.544 48.61-10.68l57.6-115.2C255.1 98.34 247.1 86.34 247.1 72C247.1 49.91 265.9 32 288 32s39.1 17.91 39.1 40c0 14.34-7.963 26.34-19.3 33.4l57.6 115.2c9.111 18.22 32.71 23.4 48.61 10.68l89.63-71.7C499.5 152.9 496 144.1 496 136C496 113.9 513.9 96 536 96S576 113.9 576 136z"></path>
+                        </svg>
+                      </div>
+                    </div>
+                    
+                    <!-- Psychologist 6 -->
+                    <div class="psychologists-item">
+                      <div class="psychologists-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1545167622-3a6ac756afa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Dr. Kimonas Arsenis" class="psychologists-image">
+                        <div class="psychologists-titles">
+                          <span>PsyD Clinical Psychology</span>
+                          <span>MA Forensic Psychology</span>
+                        </div>
+                        <div class="psychologists-name">Dr. Kimonas Arsenis</div>
+                        <div class="psychologists-message">
+                          Specializing in forensic evaluations and behavior analysis.
+                          I also provide therapy for first responders and trauma survivors.
+                          Confidentiality and ethical practice are my top priorities.
+                        </div>
+                        <svg class="psychologists-premium-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                            <path fill="#FFD700" d="M576 136c0 22.09-17.91 40-40 40c-.248 0-.4551-.1266-.7031-.1305l-50.52 277.9C482 468.9 468.8 480 453.3 480H122.7c-15.46 0-28.72-11.06-31.48-26.27L40.71 175.9C40.46 175.9 40.25 176 40 176c-22.09 0-40-17.91-40-40S17.91 96 40 96s40 17.91 40 40c0 8.998-3.521 16.89-8.537 23.57l89.63 71.7c15.91 12.73 39.5 7.544 48.61-10.68l57.6-115.2C255.1 98.34 247.1 86.34 247.1 72C247.1 49.91 265.9 32 288 32s39.1 17.91 39.1 40c0 14.34-7.963 26.34-19.3 33.4l57.6 115.2c9.111 18.22 32.71 23.4 48.61 10.68l89.63-71.7C499.5 152.9 496 144.1 496 136C496 113.9 513.9 96 536 96S576 113.9 576 136z"></path>
+                        </svg>
+                      </div>
+                    </div>
+                    
+                    <!-- Psychologist 7 -->
+                    <div class="psychologists-item">
+                      <div class="psychologists-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Dr. Helen Papadopoulou" class="psychologists-image">
+                        <div class="psychologists-titles">
+                          <span>PhD Developmental Psychology</span>
+                          <span>MEd Child Development</span>
+                        </div>
+                        <div class="psychologists-name">Dr. Helen Papadopoulou</div>
+                        <div class="psychologists-message">
+                          Children express themselves differently than adults.
+                          I specialize in play therapy and family systems approaches.
+                          Let me help your child navigate their emotional world.
+                        </div>
+                        <svg class="psychologists-premium-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                            <path fill="#FFD700" d="M576 136c0 22.09-17.91 40-40 40c-.248 0-.4551-.1266-.7031-.1305l-50.52 277.9C482 468.9 468.8 480 453.3 480H122.7c-15.46 0-28.72-11.06-31.48-26.27L40.71 175.9C40.46 175.9 40.25 176 40 176c-22.09 0-40-17.91-40-40S17.91 96 40 96s40 17.91 40 40c0 8.998-3.521 16.89-8.537 23.57l89.63 71.7c15.91 12.73 39.5 7.544 48.61-10.68l57.6-115.2C255.1 98.34 247.1 86.34 247.1 72C247.1 49.91 265.9 32 288 32s39.1 17.91 39.1 40c0 14.34-7.963 26.34-19.3 33.4l57.6 115.2c9.111 18.22 32.71 23.4 48.61 10.68l89.63-71.7C499.5 152.9 496 144.1 496 136C496 113.9 513.9 96 536 96S576 113.9 576 136z"></path>
+                        </svg>
+                      </div>
+                    </div>
+                    
+                    <!-- Psychologist 8 -->
+                    <div class="psychologists-item">
+                      <div class="psychologists-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1583864697784-a0efc8379f70?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Dr. John Michailidis" class="psychologists-image">
+                        <div class="psychologists-titles">
+                          <span>PhD Industrial Psychology</span>
+                          <span>MBA Organizational Behavior</span>
+                        </div>
+                        <div class="psychologists-name">Dr. John Michailidis</div>
+                        <div class="psychologists-message">
+                          Workplace stress doesn't have to control your life.
+                          I help professionals achieve work-life balance and career satisfaction.
+                          My corporate experience brings practical insights to our sessions.
+                        </div>
+                        <svg class="psychologists-premium-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                            <path fill="#FFD700" d="M576 136c0 22.09-17.91 40-40 40c-.248 0-.4551-.1266-.7031-.1305l-50.52 277.9C482 468.9 468.8 480 453.3 480H122.7c-15.46 0-28.72-11.06-31.48-26.27L40.71 175.9C40.46 175.9 40.25 176 40 176c-22.09 0-40-17.91-40-40S17.91 96 40 96s40 17.91 40 40c0 8.998-3.521 16.89-8.537 23.57l89.63 71.7c15.91 12.73 39.5 7.544 48.61-10.68l57.6-115.2C255.1 98.34 247.1 86.34 247.1 72C247.1 49.91 265.9 32 288 32s39.1 17.91 39.1 40c0 14.34-7.963 26.34-19.3 33.4l57.6 115.2c9.111 18.22 32.71 23.4 48.61 10.68l89.63-71.7C499.5 152.9 496 144.1 496 136C496 113.9 513.9 96 536 96S576 113.9 576 136z"></path>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <!-- End of Professional --> 
+            <!-- Mood view -->
+            <div id="mood-view" style="display:none;" class="views">
+                <div class="mood-container">
+                  <h2 class="mood-title">Daily Mood Journal</h2>
+                  
+                  <div id="mood-form">
+                    <!-- General Mood -->
+                    <div class="mood-section">
+                      <h3 class="mood-subtitle">How are you feeling overall today?</h3>
+                      <div class="mood-options">
+                        <label class="mood-option" data-mood="excellent">
+                          <input type="radio" name="mood" value="excellent" class="visually-hidden">
+                          <span class="mood-emoji">😁</span>
+                          <span class="mood-label">Excellent</span>
+                          <span class="mood-description">Feeling really great</span>
+                        </label>
+                        
+                        <label class="mood-option" data-mood="good">
+                          <input type="radio" name="mood" value="good" class="visually-hidden">
+                          <span class="mood-emoji">😊</span>
+                          <span class="mood-label">Good</span>
+                          <span class="mood-description">Pretty good day</span>
+                        </label>
+                        
+                        <label class="mood-option" data-mood="okay">
+                          <input type="radio" name="mood" value="okay" class="visually-hidden">
+                          <span class="mood-emoji">😐</span>
+                          <span class="mood-label">Okay</span>
+                          <span class="mood-description">Not bad, not great</span>
+                        </label>
+                        
+                        <label class="mood-option" data-mood="tired">
+                          <input type="radio" name="mood" value="tired" class="visually-hidden">
+                          <span class="mood-emoji">😪</span>
+                          <span class="mood-label">Tired</span>
+                          <span class="mood-description">Low on energy</span>
+                        </label>
+                        
+                        <label class="mood-option" data-mood="stressed">
+                          <input type="radio" name="mood" value="stressed" class="visually-hidden">
+                          <span class="mood-emoji">😣</span>
+                          <span class="mood-label">Stressed</span>
+                          <span class="mood-description">Feeling overwhelmed</span>
+                        </label>
+                      </div>
+                    </div>
+                    
+                    <!-- Feelings -->
+                    <div class="mood-section">
+                      <h3 class="mood-subtitle">Which emotions describe your day?</h3>
+                      <div class="mood-feelings">
+                        <label class="mood-feeling" data-feeling="happy">
+                          <input type="checkbox" name="feelings" value="happy" class="visually-hidden">
+                          <span class="feeling-emoji">😊</span>
+                          <span>Happy</span>
+                        </label>
+                        
+                        <label class="mood-feeling" data-feeling="sad">
+                          <input type="checkbox" name="feelings" value="sad" class="visually-hidden">
+                          <span class="feeling-emoji">😢</span>
+                          <span>Sad</span>
+                        </label>
+                        
+                        <label class="mood-feeling" data-feeling="angry">
+                          <input type="checkbox" name="feelings" value="angry" class="visually-hidden">
+                          <span class="feeling-emoji">😠</span>
+                          <span>Angry</span>
+                        </label>
+                        
+                        <label class="mood-feeling" data-feeling="calm">
+                          <input type="checkbox" name="feelings" value="calm" class="visually-hidden">
+                          <span class="feeling-emoji">🧘</span>
+                          <span>Calm</span>
+                        </label>
+                        
+                        <label class="mood-feeling" data-feeling="excited">
+                          <input type="checkbox" name="feelings" value="excited" class="visually-hidden">
+                          <span class="feeling-emoji">🤩</span>
+                          <span>Excited</span>
+                        </label>
+                        
+                        <label class="mood-feeling" data-feeling="anxious">
+                          <input type="checkbox" name="feelings" value="anxious" class="visually-hidden">
+                          <span class="feeling-emoji">😰</span>
+                          <span>Anxious</span>
+                        </label>
+                        
+                        <label class="mood-feeling" data-feeling="grateful">
+                          <input type="checkbox" name="feelings" value="grateful" class="visually-hidden">
+                          <span class="feeling-emoji">🙏</span>
+                          <span>Grateful</span>
+                        </label>
+                        
+                        <label class="mood-feeling" data-feeling="lonely">
+                          <input type="checkbox" name="feelings" value="lonely" class="visually-hidden">
+                          <span class="feeling-emoji">😔</span>
+                          <span>Lonely</span>
+                        </label>
+                        
+                        <label class="mood-feeling" data-feeling="hopeful">
+                          <input type="checkbox" name="feelings" value="hopeful" class="visually-hidden">
+                          <span class="feeling-emoji">🌟</span>
+                          <span>Hopeful</span>
+                        </label>
+                        
+                        <label class="mood-feeling" data-feeling="bored">
+                          <input type="checkbox" name="feelings" value="bored" class="visually-hidden">
+                          <span class="feeling-emoji">😑</span>
+                          <span>Bored</span>
+                        </label>
+                		<label class="mood-feeling" data-feeling="melancholic">
+                          <input type="checkbox" name="feelings" value="melancholic" class="visually-hidden">
+                          <span class="feeling-emoji">🎻</span>
+                          <span>Melancholic</span>
+                        </label>
+                        <label class="mood-feeling" data-feeling="serene">
+                          <input type="checkbox" name="feelings" value="serene" class="visually-hidden">
+                          <span class="feeling-emoji">🌿</span>
+                          <span>Serene</span>
+                        </label>
+                        <label class="mood-feeling" data-feeling="nostalgic">
+                          <input type="checkbox" name="feelings" value="nostalgic" class="visually-hidden">
+                          <span class="feeling-emoji">📻</span>
+                          <span>Nostalgic</span>
+                        </label>
+                        <label class="mood-feeling" data-feeling="jubilant">
+                          <input type="checkbox" name="feelings" value="jubilant" class="visually-hidden">
+                          <span class="feeling-emoji">🎉</span>
+                          <span>Jubilant</span>
+                        </label>
+                      </div>
+                    </div>
+                    
+                    <!-- Mood Triggers -->
+                    <div class="mood-section">
+                      <h3 class="mood-subtitle">What influenced your mood today?</h3>
+                      <div class="mood-triggers">
+                        <label class="mood-trigger">
+                          <input type="checkbox" name="triggers" value="weather" class="visually-hidden">
+                          <span>Weather</span>
+                        </label>
+                        
+                        <label class="mood-trigger">
+                          <input type="checkbox" name="triggers" value="social" class="visually-hidden">
+                          <span>Social interactions</span>
+                        </label>
+                        
+                        <label class="mood-trigger">
+                          <input type="checkbox" name="triggers" value="work" class="visually-hidden">
+                          <span>Work/School</span>
+                        </label>
+                        
+                        <label class="mood-trigger">
+                          <input type="checkbox" name="triggers" value="health" class="visually-hidden">
+                          <span>Physical health</span>
+                        </label>
+                        
+                        <label class="mood-trigger">
+                          <input type="checkbox" name="triggers" value="media" class="visually-hidden">
+                          <span>News/Media</span>
+                        </label>
+                        <label class="mood-trigger">
+                          <input type="checkbox" name="triggers" value="creative" class="visually-hidden">
+                          <span>Creative work</span>
+                        </label>
+                        <label class="mood-trigger">
+                          <input type="checkbox" name="triggers" value="exercise" class="visually-hidden">
+                          <span>Exercise</span>
+                        </label>
+                        <label class="mood-trigger">
+                          <input type="checkbox" name="triggers" value="family" class="visually-hidden">
+                          <span>Family</span>
+                        </label>
+                        <label class="mood-trigger">
+                          <input type="checkbox" name="triggers" value="food" class="visually-hidden">
+                          <span>Food/Nutrition</span>
+                        </label>
+                        <label class="mood-trigger">
+                          <input type="checkbox" name="triggers" value="alone-time" class="visually-hidden">
+                          <span>Alone time</span>
+                        </label>
+                      </div>
+                    </div>
+                    
+                    <!-- Thoughts Journal -->
+                    <div class="mood-section">
+                      <h3 class="mood-subtitle">Journal your thoughts</h3>
+                      <div class="notebook-wrapper">
+                        <textarea class="mood-journal" placeholder="Write your thoughts here..." maxlength="500"></textarea>
+                        <div class="notebook-lines"></div>
+                      </div>
+                      <div class="mood-counter"><span id="mood-char-count">0</span>/500</div>
+                    </div>
+                    
+                    <button class="mood-submit">Save Today's Mood</button>
+                  </div>
+                  
+                  <div id="mood-success" class="hidden">
+                    <div class="success-message">
+                      <span class="success-emoji">🌟</span>
+                      <h3>Thank you for sharing your thoughts and feelings.</h3>
+                      <p>Your mood entry has been saved.</p>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <!-- end of Mood view -->
+            <!-- Sleep view -->
+            <div id="sleep-view" style="display:none;" class="views">
+                <div class="sleep-container">
+                  <!-- Calming Sounds Section -->
+                  <div class="sleep-section calming-sounds">
+                    <div class="sleep-section-header">
+                      <svg class="sleep-section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28">
+                        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                      </svg>
+                      <h2 class="sleep-section-title">Calming Sounds</h2>
+                      <div class="sleep-section-divider"></div>
+                    </div>
+                    <div class="sleep-grid">
+                      <!-- Item 1 -->
+                      <div class="sleep-item">
+                        <h3 class="sleep-item-title">Ocean Waves</h3>
+                        <div class="sleep-image-wrapper">
+                          <img src="https://images.pexels.com/photos/3282189/pexels-photo-3282189.jpeg" alt="Ocean Waves" class="sleep-image">
+                          <div class="sleep-img-overlay"></div>
+                          <div class="sleep-overlay"></div>
+                          <svg class="sleep-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z"/>
+                          </svg>
+                        </div>
+                      </div>
+                      
+                      <!-- Item 2 -->
+                      <div class="sleep-item">
+                        <h3 class="sleep-item-title">Rainfall</h3>
+                        <div class="sleep-image-wrapper">
+                          <img src="https://images.pexels.com/photos/1529360/pexels-photo-1529360.jpeg?auto=compress" alt="Rainfall" class="sleep-image">
+                          <div class="sleep-img-overlay"></div>
+                          <div class="sleep-overlay"></div>
+                          <svg class="sleep-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z"/>
+                          </svg>
+                        </div>
+                      </div>
+                      
+                      <!-- Item 3 -->
+                      <div class="sleep-item">
+                        <h3 class="sleep-item-title">Forest Night</h3>
+                        <div class="sleep-image-wrapper">
+                          <img src="https://images.pexels.com/photos/1421903/pexels-photo-1421903.jpeg" alt="Forest Night" class="sleep-image">
+                          <div class="sleep-img-overlay"></div>
+                          <div class="sleep-overlay"></div>
+                          <svg class="sleep-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z"/>
+                          </svg>
+                        </div>
+                      </div>
+                      
+                      <!-- Item 4 -->
+                      <div class="sleep-item">
+                        <h3 class="sleep-item-title">White Noise</h3>
+                        <div class="sleep-image-wrapper">
+                          <img src="https://images.pexels.com/photos/7233356/pexels-photo-7233356.jpeg?auto=compress" alt="White Noise" class="sleep-image">
+                          <div class="sleep-img-overlay"></div>
+                          <div class="sleep-overlay"></div>
+                          <svg class="sleep-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Story Telling Section -->
+                  <div class="sleep-section story-telling">
+                    <div class="sleep-section-header">
+                      <svg class="sleep-section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28">
+                        <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-3 12H7v-2h10v2zm0-3H7V9h10v2zm0-3H7V6h10v2z"/>
+                      </svg>
+                      <h2 class="sleep-section-title">Story Telling</h2>
+                      <div class="sleep-section-divider"></div>
+                    </div>
+                    <div class="sleep-grid">
+                      <!-- Item 1 -->
+                      <div class="sleep-item">
+                        <h3 class="sleep-item-title">Fairy Tales</h3>
+                        <div class="sleep-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Fairy Tales" class="sleep-image">
+                          <div class="sleep-img-overlay"></div>
+                          <div class="sleep-overlay"></div>
+                          <svg class="sleep-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z"/>
+                          </svg>
+                        </div>
+                      </div>
+                      
+                      <!-- Item 2 -->
+                      <div class="sleep-item">
+                        <h3 class="sleep-item-title">Adventure Stories</h3>
+                        <div class="sleep-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Adventure Stories" class="sleep-image">
+                          <div class="sleep-img-overlay"></div>
+                          <div class="sleep-overlay"></div>
+                          <svg class="sleep-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z"/>
+                          </svg>
+                        </div>
+                      </div>
+                      
+                      <!-- Item 3 -->
+                      <div class="sleep-item">
+                        <h3 class="sleep-item-title">Bedtime Classics</h3>
+                        <div class="sleep-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Bedtime Classics" class="sleep-image">
+                          <div class="sleep-img-overlay"></div>
+                          <div class="sleep-overlay"></div>
+                          <svg class="sleep-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z"/>
+                          </svg>
+                        </div>
+                      </div>
+                      
+                      <!-- Item 4 -->
+                      <div class="sleep-item">
+                        <h3 class="sleep-item-title">Mythological Tales</h3>
+                        <div class="sleep-image-wrapper">
+                          <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Mythological Tales" class="sleep-image">
+                          <div class="sleep-img-overlay"></div>
+                          <div class="sleep-overlay"></div>
+                          <svg class="sleep-lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2a3 3 0 0 1 3 3v3H9V7a3 3 0 0 1 3-3z"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <!-- End of Sleep --> 
+            <!-- AI Chat -->
+            <div id="ai-view" style="display:none;" class="views">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="bot-avatar"><i class="fas fa-user-md"></i></div>
+                        <div class="header-text">
+                            <h2>Hi, I am Ted.</h2>
+                            <div class="ai-chat-intro">Learn more about me</div>
+                                <!-- Popup structure -->
+                                <div class="popup-overlay"></div>
+                                <div class="ai-chat-intro-popup">
+                                    <button class="popup-close">&times;</button>
+                                    <h2>Hi there!</h2>
+                                    <p>
+                                        I am your personal Zen Buddy.
+                                        I'm an <strong>AI-powered chat assistant</strong>, carefully trained with the guidance of experienced psychologists. 
+                                        I'm here to listen, support you, and help you better understand your thoughts and feelings.
+                                    </p>
+                                    <p>
+                                        Please keep in mind that I'm not a human or a licensed professional, so I can't provide therapy. 
+                                        If you ever need professional help, I encourage you to reach out to a qualified mental health specialist.
+                                    </p>
+                                    <p>
+                                        To improve your experience and enhance the quality of support I provide, our conversations may be recorded 
+                                        and analyzed — but always with your privacy and safety in mind.
+                                    </p>
+                                </div>
+                            <p>How can I help you today?</p>
+                        </div>
+                        <div class="status-indicator online"></div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Messages will appear here -->
+                        <div class="message bot-message">
+                            <div class="message-time"><?= date('h:i A') ?></div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input">
+                        <div class="emoji-picker-trigger" id="emoji-picker-trigger">😊</div>
+                        <input type="text" id="user-input" placeholder="Type your message here..." autocomplete="off" disabled>
+                        <button id="send-button" disabled><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Camera view -->
+            <div id="camera-view" style="display:none;" class="views">
+                <div class="video-call-container">
+                  <div class="session-info">
+                    <h3>Your next session is with Dr. Helen</h3>
+                    <p class="doctor-bio">Dr. Helen specializes in cognitive behavioral therapy and work-related stress management. With 12 years of experience, she incorporates innovative animal-assisted techniques to help patients regain motivation. Clients describe her approach as "energizing yet calming" and appreciate her practical coping strategies.</p>
+                  </div>
+                  
+                  <div class="video-grid">
+                    <!-- Doctor View -->
+                    <div class="video-window remote-view">
+                      <div class="avatar-placeholder">
+                        <svg class="avatar-img" viewBox="0 0 100 100">
+                          <circle cx="50" cy="40" r="20" fill="#e0e0e0"/>
+                          <circle cx="50" cy="100" r="45" fill="#e0e0e0"/>
+                        </svg>
+                        <div class="doctor-loader" style="display:none;">
+                          <div class="loader-spinner"></div>
+                          <p>Waiting for your doctor to join...</p>
+                        </div>
+                        <video id="doctor-video" autoplay playsinline style="display:none;"></video>
+                      </div>
+                      <div class="user-name">Dr. Helen</div>
+                    </div>
+                    
+                    <!-- User View -->
+                    <div class="video-window local-view">
+                      <div class="avatar-placeholder">
+                        <svg class="avatar-img" viewBox="0 0 100 100">
+                          <circle cx="50" cy="40" r="20" fill="#e0e0e0"/>
+                          <circle cx="50" cy="100" r="45" fill="#e0e0e0"/>
+                        </svg>
+                      </div>
+                      <video id="local-video" autoplay playsinline style="display:none;"></video>
+                    </div>
+                  </div>
+                  
+                  <div class="media-controls">
+                    <button class="control-btn mic-btn" title="Mute" disabled>
+                      <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2c1.1 0 2 .9 2 2v6c0 1.1-.9 2-2 2s-2-.9-2-2V4c0-1.1.9-2 2-2zm8 9c0 3.5-2.6 6.4-6 6.9V21h-2v-3.1c-3.4-.5-6-3.4-6-6.9h2c0 2.8 2.2 5 5 5s5-2.2 5-5h2z"/>
+                      </svg>
+                    </button>
+                    
+                    <div class="volume-slider">
+                      <input type="range" min="0" max="100" value="80" class="slider-camera" disabled>
+                      <div class="volume-level" style="--level:80%"></div>
+                    </div>
+                    
+                    <button class="control-btn camera-btn" title="Camera Off" disabled>
+                      <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                      </svg>
+                    </button>
+                    
+                    <button class="control-btn swap-btn" title="Swap Views" disabled>
+                      <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M22 18v-2H8V4h2L7 1 4 4h2v2H2v2h12v8h2l3-3 3 3h-2v2z"/>
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  <div class="session-controls">
+                    <button id="session-btn" class="session-btn">
+                      <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+                      </svg>
+                      <span>Join Session with Dr. Helen</span>
+                    </button>
+                  </div>
+                    <div id="review-section" class="review-section" style="display:none">
+                      <div class="review-form">
+                        <h4>Review Session</h4>
+                        <div class="review-question">
+                          <p>How satisfied are you with today's session?</p>
+                          <div class="rating-stars" data-question="1">
+                            <span data-value="1">★</span>
+                            <span data-value="2">★</span>
+                            <span data-value="3">★</span>
+                            <span data-value="4">★</span>
+                            <span data-value="5">★</span>
+                          </div>
+                        </div>
+                        <div class="review-question">
+                          <p>Did you find the techniques helpful?</p>
+                          <div class="rating-stars" data-question="2">
+                            <span data-value="1">★</span>
+                            <span data-value="2">★</span>
+                            <span data-value="3">★</span>
+                            <span data-value="4">★</span>
+                            <span data-value="5">★</span>
+                          </div>
+                        </div>
+                          <div class="review-question">
+                            <p>Would you recommend this type of session?</p>
+                            <div class="rating-stars" data-question="3">
+                              <span data-value="1">★</span>
+                              <span data-value="2">★</span>
+                              <span data-value="3">★</span>
+                              <span data-value="4">★</span>
+                              <span data-value="5">★</span>
+                            </div>
+                          </div>
+                      </div>
+                      
+                      <div class="review-form">
+                        <h4>Review Dr. Helen</h4>
+                        <div class="review-question">
+                          <p>How would you rate Dr. Helen's expertise?</p>
+                          <div class="rating-stars" data-question="3">
+                            <span data-value="1">★</span>
+                            <span data-value="2">★</span>
+                            <span data-value="3">★</span>
+                            <span data-value="4">★</span>
+                            <span data-value="5">★</span>
+                          </div>
+                        </div>
+                        <div class="review-question">
+                          <p>How comfortable did you feel with Dr. Helen?</p>
+                          <div class="rating-stars" data-question="4">
+                            <span data-value="1">★</span>
+                            <span data-value="2">★</span>
+                            <span data-value="3">★</span>
+                            <span data-value="4">★</span>
+                            <span data-value="5">★</span>
+                          </div>
+                        </div>
+                        <div class="review-question">
+                          <p>How did Dr. Helen help you?</p>
+                            <div class="help-options">
+                              <label class="option-item">
+                                <input type="checkbox" name="help-type" value="calm">
+                                <span class="option-content">
+                                  <span class="option-icon">🧘</span>
+                                  <span class="option-text">Helped me find calm and emotional balance</span>
+                                </span>
+                              </label>
+                              
+                              <label class="option-item">
+                                <input type="checkbox" name="help-type" value="methods">
+                                <span class="option-content">
+                                  <span class="option-icon">✨</span>
+                                  <span class="option-text">Introduced innovative techniques I hadn't tried</span>
+                                </span>
+                              </label>
+                              
+                              <label class="option-item">
+                                <input type="checkbox" name="help-type" value="esteem">
+                                <span class="option-content">
+                                  <span class="option-icon">💪</span>
+                                  <span class="option-text">Boosted my self-confidence and self-worth</span>
+                                </span>
+                              </label>
+                              
+                              <label class="option-item">
+                                <input type="checkbox" name="help-type" value="energy">
+                                <span class="option-content">
+                                  <span class="option-icon">⚡</span>
+                                  <span class="option-text">Restored my motivation and energy levels</span>
+                                </span>
+                              </label>
+                              
+                              <label class="option-item">
+                                <input type="checkbox" name="help-type" value="communication">
+                                <span class="option-content">
+                                  <span class="option-icon">🗣️</span>
+                                  <span class="option-text">Clearly explained my challenges and solutions</span>
+                                </span>
+                              </label>
+                              
+                              <label class="option-item">
+                                <input type="checkbox" name="help-type" value="theoretical">
+                                <span class="option-content">
+                                  <span class="option-icon">📚</span>
+                                  <span class="option-text">Provided deep psychological insights</span>
+                                </span>
+                              </label>
+                              
+                              <label class="option-item">
+                                <input type="checkbox" name="help-type" value="practical">
+                                <span class="option-content">
+                                  <span class="option-icon">🛠️</span>
+                                  <span class="option-text">Offered immediate actionable techniques</span>
+                                </span>
+                              </label>
+                            </div>
+                      </div>
+                      
+                      <div class="review-actions">
+                        <button class="submit-btn">
+                          <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                          </svg>
+                          Submit Feedback
+                        </button>
+                      </div>
+                    </div>
+            </div>
+            </div>
+            </div>
+            <!-- Map Content -->
+            <div class="map-view views" style="display:none;" id="map-container">
+                <div class="map-filters">
+                    <div class="filter-toggle-not">
+                        <div id="clear-directions" class="clear-directions leaflet-control-clear">
+                            <i class="fas fa-arrows-rotate"></i> Reset directions
+                        </div>
+                    </div>
+                    <div class="filter-toggle" data-filter="greenspaces">
+                        <div class="filter-icon">
+                            <i class="fas fa-tree"></i>
+                        </div>
+                        <span>Green Spaces</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="filter-toggle" data-filter="cleanair">
+                        <div class="filter-icon">
+                            <i class="fas fa-wind"></i>
+                        </div>
+                        <span>Clean Air</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="filter-toggle" data-filter="sunlight">
+                        <div class="filter-icon">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                        <span>Sunlight View</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="filter-toggle" data-filter="clearsky">
+                        <div class="filter-icon">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <span>Clear Sky</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                </div>
+                <div style="display:none;" class="map-filters">
+                    <div class="filter" data-filter="greenspaces">
+                        <div class="filter-icon" style="background-color: var(--map-1);">
+                            <i class="fas fa-tree"></i>
+                        </div>
+                        <span>High DVI</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="filter" data-filter="air">
+                        <div class="filter-icon" style="background-color: var(--map-2);">
+                            <i class="fas fa-wind"></i>
+                        </div>
+                        <span>Air Quality</span>
+                    </div>
+                    <div class="filter" data-filter="sun">
+                        <div class="filter-icon" style="background-color: var(--map-3);">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                        <span>Sunlight</span>
+                    </div>
+                    <div class="filter" data-filter="sky">
+                        <div class="filter-icon" style="background-color: var(--map-4);">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <span>Clear Sky</span>
+                    </div>
+                </div>
+                <div id="map"></div>
+            </div>
+        </main>
+ 
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Leaflet JS for Map -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Leaflet Curve Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-curve@1.0.0/leaflet.curve.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+    <script src="chat/script.js"></script>  
+    
+    <!-- Custom JS -->
+    <script src="js/app.js"></script>
+    
+    <!-- Service Worker -->
+    <!--
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('js/sw.js');
+            });
+        }
+    </script>
+    -->
+</body>
+</html>
