@@ -8,7 +8,7 @@
 ## 🌄 Preview Screenshots
 
 ### 🖥️ Dashboard View  
-![Dashboard](https://www.dropbox.com/scl/fi/2ijyye1szion89n1bl7c0/user_dashboard_desktop.png?rlkey=f4of7y7u0ykxihdi2nmby52c5&st=ruucmyd0&dl=0)
+![Open MindMap – User Dashboard](https://www.dropbox.com/scl/fi/2ijyye1szion89n1bl7c0/user_dashboard_desktop.png?rlkey=f4of7y7u0ykxihdi2nmby52c5&st=nyi88egd&raw=1)
 
 ### 📱 Mobile View  
 ![Mobile View](https://www.dropbox.com/scl/fi/xtld8oba3ulqj9r748hni/mindmap_pitch_app.png?rlkey=qf73mamlltcckd4kpstgwr2up&st=cdyve4fg&dl=0)
