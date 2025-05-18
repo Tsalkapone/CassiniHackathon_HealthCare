@@ -3,7 +3,7 @@
 
 **MindMap** is a science-driven mental wellness app that merges satellite data, clinically validated tools, and personalized content to promote emotional well-being. It helps users track moods, discover nearby green spaces, and improve their mental health through interactive tools and multimedia guidance.
 
-![MindMap Cover](https://your-image-link.com/mindmap-cover.png)
+![MindMap Cover](https://www.dropbox.com/scl/fi/2ijyye1szion89n1bl7c0/user_dashboard_desktop.png?rlkey=f4of7y7u0ykxihdi2nmby52c5&st=nyi88egd&dl=0)
 
 ---
 
