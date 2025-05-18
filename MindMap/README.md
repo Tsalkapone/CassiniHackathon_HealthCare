@@ -59,11 +59,41 @@
 
 ## 🚀 Installation
 
-Simply download the project folder and open `index.php` in your browser.
+### 🧰 Option 1: Using XAMPP (Easy for Beginners)
 
-Alternatively, run it through a local server such as **XAMPP** by placing the project inside the `htdocs` folder, then visit:
 
+1. Download and install [XAMPP](https://www.apachefriends.org/index.html)
+2. Copy this project folder into `htdocs`:
+   - Windows: `C:\xampp\htdocs\`
+   - macOS: `/Applications/XAMPP/htdocs/`
+3. Launch XAMPP Control Panel and start **Apache** (and **MySQL** if needed).
+4. (Optional) Open `http://localhost/phpmyadmin`, create a database, and import `database.sql` if included.
+5. Open your browser and go to:
+
+http://localhost/
+
+### 💻 Option 2: Using Laravel Sail (Modern Setup)
+
+#### Prerequisites
+- [Composer](https://getcomposer.org/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+#### Steps
+
+```bash
+# Clone this repository
+git clone https://github.com/your-username/your-repo.git
+cd your-repo
+
+# Install PHP dependencies
+composer install
+
+# Copy and edit environment
+cp .env.example .env
+php artisan key:generate
+
+# Launch with Laravel Sail
+./vendor/bin/sail up
+
+# Access on your browser
 http://localhost
-
-> ✅ No setup or build process required — everything runs natively.
-
