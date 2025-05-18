@@ -61,6 +61,7 @@
 
 ### 📡 APIs & Data Sources
 - `Copernicus`, `EUSPA` for satellite and environmental data
+- `Galileo`, GNSS for accurate navigation and location
 - `Gemini AI` for language understanding and response generation
 
 ### 🔐 Authentication & Compliance
