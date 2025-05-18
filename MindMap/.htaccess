@@ -1,0 +1,8 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} -d           # Check if it's a directory
+RewriteRule ^(.*)/$ $1/index.php [L]         # Rewrite to index.php (hidden)
+
+# Optional: Redirect direct "/index.php" requests to clean URL
+RewriteCond %{THE_REQUEST} /index\.php [NC]
+RewriteRule ^(.*)/index\.php$ /$1/ [R=301,L]
